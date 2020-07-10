@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Test game</title>
+    <meta name="description" content="">
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+
+    <style>
+        body {
+            background: #eee;
+            padding: 10px;
+            margin: 10px;
+            overflow-y: scroll;
+            max-width: 100%;
+            font-size: 10px;
+            /*height: 90000px;*/
+        }
+
+        .result {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 100px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            overflow: scroll;
+            max-height: 100px;
+            max-width: 300px;
+        }
+
+        input, textarea, select, button {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+        }
+
+        .controls {
+            overflow: scroll;
+            max-height: 200px;
+        }
+    </style>
+
+    <body>
+        <div id="debug" class="result"></div>
+        <div id="result" class="result"></div>
+
+        <input type="text">
+        <textarea>test</textarea>
+        <div class="controls">
+            <button onclick="VKWebAppShowCommunityWidgetPreviewBox()">VKWebAppShowCommunityWidgetPreviewBox</button>
+            <button onclick="VkWebAppShowSubscriptionBox()">VkWebAppShowSubscriptionBox</button>
+            <button onclick="VkWebAppShowInstallPushBox()">VkWebAppShowInstallPushBox</button>
+            <button onclick="VKWebAppStorageGet()">VKWebAppStorageGet</button>
+        </div>
+    </body>
+
+    <script>
+      vkBridge.send('VKWebAppInit').then(data => {
+        console.log('data', data);
+      });
+
+      function VKWebAppShowCommunityWidgetPreviewBox() {
+        vkBridge.send('VKWebAppShowCommunityWidgetPreviewBox', {
+          'group_id': 162268327,
+          'type': 'text',
+          'code': 'return {"title": "test", "text": "Text"}'
+        });
+      }
+
+      function VkWebAppShowSubscriptionBox() {
+        console.log('call', 'VkWebAppShowSubscriptionBox');
+        vkBridge.send('VkWebAppShowSubscriptionBox', {action: 'create', item: 'subscription1'}).then((resp) => {
+          console.log('success', resp);
+        }).catch((err) => {
+          console.log('error', err);
+        });
+      }
+
+      function VkWebAppShowInstallPushBox() {
+        vkBridge.send('VkWebAppShowInstallPushBox').then((resp) => {
+          console.log('VkWebAppShowInstallPushBox', resp);
+        }).catch((err) => {
+          console.log('err', err);
+        })
+      }
+
+      function VKWebAppStorageSet() {
+        vkBridge.send('VKWebAppStorageSet', {key: 'test', value: 'test_value'}).then((resp) => {
+          console.log('resp', resp);
+        }).catch((err) => {
+          console.log('err', err);
+        })
+      }
+
+      function VKWebAppStorageGet() {
+        vkBridge.send('VKWebAppStorageGet', {keys: ['test']}).then((resp) => {
+          console.log('resp', resp);
+        }).catch((err) => {
+          console.log('err', err);
+        })
+      }
+
+    </script>
+</html>
