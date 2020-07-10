@@ -27,7 +27,6 @@
             margin-bottom: 10px;
             overflow: scroll;
             max-height: 100px;
-            max-width: 300px;
         }
 
         input, textarea, select, button {
@@ -48,10 +47,9 @@
     <body>
         <div id="debug" class="result"></div>
         <div id="result" class="result"></div>
-
-        <input type="text">
-        <textarea>test</textarea>
+        <textarea id="custom">{"method": "MethodName", "params": {}}</textarea>
         <div class="controls">
+            <button onclick="sendCustom()">Send Custom</button>
             <button onclick="VKWebAppShowCommunityWidgetPreviewBox()">VKWebAppShowCommunityWidgetPreviewBox</button>
             <button onclick="VkWebAppShowSubscriptionBox()">VkWebAppShowSubscriptionBox</button>
             <button onclick="VkWebAppShowInstallPushBox()">VkWebAppShowInstallPushBox</button>
@@ -61,8 +59,24 @@
 
     <script>
       vkBridge.send('VKWebAppInit').then(data => {
-        console.log('data', data);
+        result('VKWebAppInit', data);
       });
+
+      function result(...args) {
+        document.querySelector('#result').innerHTML += JSON.stringify(args) + '<br>';
+      }
+
+      function sendCustom() {
+        let json = document.getElementById('custom').value;
+        json = JSON.parse(json);
+        vkBridge.send(json.method, json.params).then((resp) => {
+          console.log(resp);
+          result(resp);
+        }).catch((err) => {
+          console.log(err);
+          result(err);
+        });
+      }
 
       function VKWebAppShowCommunityWidgetPreviewBox() {
         vkBridge.send('VKWebAppShowCommunityWidgetPreviewBox', {
@@ -76,15 +90,19 @@
         console.log('call', 'VkWebAppShowSubscriptionBox');
         vkBridge.send('VkWebAppShowSubscriptionBox', {action: 'create', item: 'subscription1'}).then((resp) => {
           console.log('success', resp);
+          result(resp);
         }).catch((err) => {
           console.log('error', err);
+          result(err);
         });
       }
 
       function VkWebAppShowInstallPushBox() {
         vkBridge.send('VkWebAppShowInstallPushBox').then((resp) => {
           console.log('VkWebAppShowInstallPushBox', resp);
+          result(resp);
         }).catch((err) => {
+          result(err);
           console.log('err', err);
         })
       }
@@ -92,7 +110,9 @@
       function VKWebAppStorageSet() {
         vkBridge.send('VKWebAppStorageSet', {key: 'test', value: 'test_value'}).then((resp) => {
           console.log('resp', resp);
+          result(resp);
         }).catch((err) => {
+          result(err);
           console.log('err', err);
         })
       }
@@ -100,7 +120,9 @@
       function VKWebAppStorageGet() {
         vkBridge.send('VKWebAppStorageGet', {keys: ['test']}).then((resp) => {
           console.log('resp', resp);
+          result(resp);
         }).catch((err) => {
+          result(err);
           console.log('err', err);
         })
       }
