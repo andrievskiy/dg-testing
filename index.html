@@ -64,13 +64,18 @@
       });
 
       function testNavigation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((resp) => {
-            result(resp.coords.latitude, resp.coords.longitude);
-          })
-        } else {
-          result('not supported');
+        try {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((resp) => {
+              result(resp.coords.latitude, resp.coords.longitude);
+            })
+          } else {
+            result('not supported');
+          }
+        } catch (e) {
+          result('Error')
         }
+
       }
 
       function result(...args) {
