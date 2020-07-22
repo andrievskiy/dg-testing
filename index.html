@@ -54,6 +54,7 @@
             <button onclick="VkWebAppShowSubscriptionBox()">VkWebAppShowSubscriptionBox</button>
             <button onclick="VkWebAppShowInstallPushBox()">VkWebAppShowInstallPushBox</button>
             <button onclick="VKWebAppStorageGet()">VKWebAppStorageGet</button>
+            <button onclick="testNavigation()">testNavigation</button>
         </div>
     </body>
 
@@ -61,6 +62,16 @@
       vkBridge.send('VKWebAppInit').then(data => {
         result('VKWebAppInit', data);
       });
+
+      function testNavigation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((resp) => {
+            result(resp.coords.latitude, resp.coords.longitude);
+          })
+        } else {
+          result('not supported');
+        }
+      }
 
       function result(...args) {
         document.querySelector('#result').innerHTML += JSON.stringify(args) + '<br>';
